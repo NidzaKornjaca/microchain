@@ -1,0 +1,2 @@
+class BlockInvalidException(Exception):
+    pass

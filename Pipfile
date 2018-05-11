@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 
 [dev-packages]
+ipython = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.6"

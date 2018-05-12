@@ -9,6 +9,7 @@ class Node(object):
     def __init__(self):
         self.pending_transactions = []
         self.blockchain = Blockchain()
+        self.neighbours = set()
 
     def validate_transaction(self, transaction):
         return True
@@ -45,6 +46,12 @@ class Node(object):
         print("Nonce is", i)
         return i
 
+    def add_neighbour(self, address):
+        self.neighbours.add(NeighbourNode(address))
+
+    def serialize_neighbours(self):
+        return [i.address for i in self.neighbours]
+
 
 def demo():
     print("init muchain")
@@ -64,3 +71,12 @@ def demo():
     print("Transactions in latest node")
     print(node.blockchain.chain[-1].transactions)
     return node
+
+
+class NeighbourNode(object):
+
+    def __init__(self, address):
+        self.address = address
+
+    def __hash__(self):
+        return self.address.__hash__()

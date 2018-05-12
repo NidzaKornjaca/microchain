@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify
 from microchain.node import Node
+from microchain.blockchain import Block
+from microchain.exceptions import BlockInvalidException
 
 app = Flask(__name__)
 node = Node()
@@ -53,6 +55,15 @@ def block_mined():
                 "msg": "Message must contain 'miner' and 'block' fields"
             }
         ), 400
+    block_parsed = Block.deserialize(block)
+    try:
+        node.receive_block(block_parsed)
+    except BlockInvalidException:
+        return jsonify(
+            {
+                "msg": "Adding failed"
+            }
+        )
     return jsonify(
         {
             "msg": "KTHXBAI"

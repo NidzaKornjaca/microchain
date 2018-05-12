@@ -30,7 +30,7 @@ class Node(object):
         fresh_block = Block(
             previous_block.idx + 1,
             previous_block_hash,
-            datetime.now(),
+            datetime.now().timestamp(),
             nonce,
             self.pending_transactions
         )

@@ -19,7 +19,16 @@ class Block(object):
             self.nonce,
             self.transactions
         )
-        return sha256(string_seed.encode())
+        return sha256(string_seed.encode()).hexdigest()
+
+    def serialize(self):
+        return {
+            'idx': self.idx,
+            'previous_block_hash': self.previous_block_hash,
+            'timestamp': self.timestamp,
+            'transactions': [tx.__dict__ for tx in self.transactions],
+            'nonce': self.nonce
+        }
 
 
 class Blockchain(object):
@@ -27,17 +36,17 @@ class Blockchain(object):
     def __init__(self):
         self.chain = []
         self.chain.append(
-            Block(0, 0, datetime.now(), 0, [])
+            Block(0, 0, datetime.now().timestamp(), 0, [])
         )
 
     def validate_nonce(self, nonce, previous_block_hash):
-        hash_string = "{}{}".format(nonce, previous_block_hash.hexdigest())
+        hash_string = "{}{}".format(nonce, previous_block_hash)
         return sha256(hash_string.encode()).hexdigest()[:4] == '0000'
 
     def validate_block(self, block):
         previous_block = self.chain[block.idx - 1]
         if (
-            previous_block.hash().hexdigest() != block.previous_block_hash.hexdigest() or
+            previous_block.hash() != block.previous_block_hash or
             not self.validate_nonce(block.nonce, block.previous_block_hash)
         ):
             return False
@@ -51,4 +60,4 @@ class Blockchain(object):
             raise BlockInvalidException()
 
     def serialize_chain(self):
-        return [i.__dict__ for i in self.chain]
+        return [i.serialize() for i in self.chain]

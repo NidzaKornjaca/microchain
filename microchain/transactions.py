@@ -2,11 +2,11 @@ from datetime import datetime
 
 class Transaction(object):
 
-    def __init__(self, sender, recipient, amount):
+    def __init__(self, sender, recipient, amount, timestamp=datetime.now().timestamp()):
         self.sender = sender
         self.recipient = recipient
         self.amount = amount
-        self.timestamp = datetime.now()
+        self.timestamp = timestamp
 
     def __repr__(self):
         return "{} -> {} = {}".format(

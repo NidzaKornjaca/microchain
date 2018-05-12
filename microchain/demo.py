@@ -12,7 +12,7 @@ def add_block():
     block = Block(
         prev_block.idx + 1,
         prev_hash,
-        datetime.now(),
+        datetime.now().timestamp(),
         calculate_nonce(blockchain, prev_hash)
     )
     print("Try to add valid block")
@@ -20,7 +20,7 @@ def add_block():
     bad_block = Block(
         prev_block.idx + 1,
         prev_hash,
-        datetime.now(),
+        datetime.now().timestamp(),
         0
     )
     print("Try to add bad block")

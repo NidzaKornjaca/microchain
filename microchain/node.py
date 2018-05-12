@@ -1,4 +1,5 @@
 from datetime import datetime
+import requests
 from .blockchain import Blockchain, Block
 from .transactions import Transaction
 from .exceptions import TransactionInvalidException
@@ -80,3 +81,33 @@ class NeighbourNode(object):
 
     def __hash__(self):
         return self.address.__hash__()
+
+    def tell_block_mined(self, miner, block):
+        response = requests.post(
+            self.address + 'block/mined',
+            json={
+                'miner': miner,
+                'block': block.serialize()
+            }
+        )
+        return response
+
+    def get_chain(self):
+        response = requests.get(self.address + 'chain')
+        chain = response.json()
+        blockchain = Blockchain()
+        for block in chain[1:]:
+            transactions = [
+                Transaction(tx.sender, tx.recipient, tx.amount)
+                for tx in block['transactions']
+            ]
+            blockchain.add_block(
+                Block(
+                    block['idx'],
+                    block['previous_block_hash'],
+                    block['timestamp'],
+                    block['nonce'],
+                    transactions
+                )
+            )
+        return blockchain

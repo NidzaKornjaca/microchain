@@ -44,4 +44,17 @@ def get_chain():
 
 @app.route('/block/mined', methods=['POST'])
 def block_mined():
-    pass
+    json = request.json
+    miner = json.get('miner')
+    block = json.get('block')
+    if not miner or not block:
+        return jsonify(
+            {
+                "msg": "Message must contain 'miner' and 'block' fields"
+            }
+        ), 400
+    return jsonify(
+        {
+            "msg": "KTHXBAI"
+        }
+    ), 200

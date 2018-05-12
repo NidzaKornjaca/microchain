@@ -1,5 +1,6 @@
 from .blockchain import Block, Blockchain
 from .exceptions import BlockInvalidException
+from .node import Node, NeighbourNode
 from datetime import datetime
 
 
@@ -39,3 +40,14 @@ def calculate_nonce(blockchain, previous_hash):
         i += 1
     print("Nonce is", i)
     return i
+
+def block_sync_demo():
+    n = Node()
+    addr = 'http://localhost:5000/'
+    nn = NeighbourNode(addr)
+    n.add_neighbour(addr)
+    #force sync
+    n.blockchain = nn.get_chain()
+    fresh_block = n.mine()
+    for i in n.neighbours:
+        print(i.tell_block_mined('me', fresh_block))

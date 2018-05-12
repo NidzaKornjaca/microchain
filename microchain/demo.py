@@ -51,3 +51,13 @@ def block_sync_demo():
     fresh_block = n.mine()
     for i in n.neighbours:
         print(i.tell_block_mined('me', fresh_block))
+
+
+def advanced_sync_demo():
+    n = Node()
+    n.add_neighbour('http://localhost:5000/')
+    block_sync_demo()
+    block_sync_demo()
+    n.sync()
+    print(n.blockchain.serialize_chain())
+    return n

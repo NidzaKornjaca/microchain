@@ -2,7 +2,7 @@ from datetime import datetime
 import requests
 from .blockchain import Blockchain, Block
 from .transactions import Transaction
-from .exceptions import TransactionInvalidException
+from .exceptions import TransactionInvalidException, BlockInvalidException
 
 
 class Node(object):
@@ -55,6 +55,24 @@ class Node(object):
 
     def serialize_neighbours(self):
         return [i.address for i in self.neighbours]
+
+    def sync(self, force=False):
+        best_chain = None
+        best_len = 0 if force else len(self.blockchain.chain)
+        for neighbour in self.neighbours:
+            try:
+                chain = neighbour.get_chain()
+            except BlockInvalidException:
+                print('Invalid chain found - ignoring')
+                continue
+            chain_len = len(chain.chain)
+            if chain_len > best_len:
+                print('Longer chain found!')
+                best_chain = chain
+                best_len = chain_len
+        if best_chain:
+            print('Replacing our chain')
+            self.blockchain = chain
 
 
 def demo():

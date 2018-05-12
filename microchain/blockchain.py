@@ -1,6 +1,7 @@
 from datetime import datetime
 from hashlib import sha256
 from .exceptions import BlockInvalidException
+from .transactions import Transaction
 
 class Block(object):
 
@@ -30,6 +31,19 @@ class Block(object):
             'nonce': self.nonce
         }
 
+    @staticmethod
+    def deserialize(block):
+        transactions = [
+            Transaction(**tx)
+            for tx in block['transactions']
+        ]
+        return Block(
+            block['idx'],
+            block['previous_block_hash'],
+            block['timestamp'],
+            block['nonce'],
+            transactions
+        )
 
 class Blockchain(object):
 

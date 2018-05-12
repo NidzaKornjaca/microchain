@@ -47,6 +47,9 @@ class Node(object):
         print("Nonce is", i)
         return i
 
+    def receive_block(self, block):
+        self.blockchain.add_block(block)
+
     def add_neighbour(self, address):
         self.neighbours.add(NeighbourNode(address))
 
@@ -96,18 +99,9 @@ class NeighbourNode(object):
         response = requests.get(self.address + 'chain')
         chain = response.json()
         blockchain = Blockchain()
+        blockchain.chain = [Block.deserialize(chain[0])]
         for block in chain[1:]:
-            transactions = [
-                Transaction(tx.sender, tx.recipient, tx.amount)
-                for tx in block['transactions']
-            ]
             blockchain.add_block(
-                Block(
-                    block['idx'],
-                    block['previous_block_hash'],
-                    block['timestamp'],
-                    block['nonce'],
-                    transactions
-                )
+                Block.deserialize(block)
             )
         return blockchain

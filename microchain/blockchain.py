@@ -49,3 +49,6 @@ class Blockchain(object):
             print("Block added to blockchain")
         else:
             raise BlockInvalidException()
+
+    def serialize_chain(self):
+        return [i.__dict__ for i in self.chain]

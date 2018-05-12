@@ -5,8 +5,14 @@ app = Flask(__name__)
 node = Node()
 
 @app.route('/')
-def index():
-    pass
+def node_info():
+    node_info = {
+        "chain_len": len(node.blockchain.chain),
+        "num_ptx": len(node.pending_transactions)
+    }
+    return jsonify(
+        node_info
+    )
 
 @app.route('/node/introduce', methods=['POST'])
 def introduce_node():
@@ -15,7 +21,7 @@ def introduce_node():
 @app.route('/chain', methods=['GET'])
 def get_chain():
     return jsonify(
-        node.blockchain.chain
+        node.blockchain.serialize_chain()
     )
 
 @app.route('/block/mined', methods=['POST'])

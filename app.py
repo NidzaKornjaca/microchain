@@ -37,6 +37,16 @@ def introduce_node():
         )
 
 
+@app.route('/sync', methods=['POST'])
+def go_sync():
+    node.sync()
+    return jsonify(
+        {
+            "msg": "Synced"
+        }
+    ), 200
+
+
 @app.route('/chain', methods=['GET'])
 def get_chain():
     return jsonify(

@@ -39,7 +39,7 @@ class Node(object):
         self.pending_transactions = []
         return fresh_block
 
-    @staticmethod    
+    @staticmethod
     def calculate_nonce(blockchain, previous_hash):
         i = 0
         while not blockchain.validate_nonce(i, previous_hash):
@@ -49,6 +49,8 @@ class Node(object):
 
     def receive_block(self, block):
         self.blockchain.add_block(block)
+        for neighbour in self.neighbours:
+            neighbour.ask_for_sync()
 
     def add_neighbour(self, address):
         self.neighbours.add(NeighbourNode(address))
@@ -73,6 +75,8 @@ class Node(object):
         if best_chain:
             print('Replacing our chain')
             self.blockchain = chain
+            for neighbour in self.neighbours:
+                neighbour.ask_for_sync()
 
 
 def demo():
@@ -102,6 +106,10 @@ class NeighbourNode(object):
 
     def __hash__(self):
         return self.address.__hash__()
+
+    def ask_for_sync(self):
+        response = requests.post(self.address + 'sync')
+        return response
 
     def tell_block_mined(self, miner, block):
         response = requests.post(

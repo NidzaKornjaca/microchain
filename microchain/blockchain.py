@@ -10,7 +10,7 @@ class Block(object):
         self.previous_block_hash = previous_block_hash
         self.timestamp = timestamp
         self.transactions = transactions
-        self.nonce = nonce    
+        self.nonce = nonce
 
     def hash(self):
         string_seed = "{}{}{}{}{}".format(

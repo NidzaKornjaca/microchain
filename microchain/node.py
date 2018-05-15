@@ -79,26 +79,6 @@ class Node(object):
                 neighbour.ask_for_sync()
 
 
-def demo():
-    print("init muchain")
-    node = Node()
-    print("mining...")
-    print(node.mine())
-    print("From me to you!")
-    tx = Transaction("me", "you", 10)
-    print("transmiting tx")
-    print("tx will be part of block {}".format(
-        node.receive_transaction(tx)
-    ))
-    print("mining...")
-    print(node.mine())
-    print("Chain:")
-    print(node.blockchain.chain)
-    print("Transactions in latest node")
-    print(node.blockchain.chain[-1].transactions)
-    return node
-
-
 class NeighbourNode(object):
 
     def __init__(self, address):

@@ -57,12 +57,11 @@ def get_chain():
 @app.route('/block/mined', methods=['POST'])
 def block_mined():
     json = request.json
-    miner = json.get('miner')
     block = json.get('block')
-    if not miner or not block:
+    if not block:
         return jsonify(
             {
-                "msg": "Message must contain 'miner' and 'block' fields"
+                "msg": "Message must contain and 'block' fields"
             }
         ), 400
     block_parsed = Block.deserialize(block)

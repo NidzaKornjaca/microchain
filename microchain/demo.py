@@ -39,7 +39,7 @@ def node_sync():
     n.blockchain = nn.get_chain()
     fresh_block = n.mine()
     for i in n.neighbours:
-        print(i.tell_block_mined('me', fresh_block))
+        print(i.send_block(fresh_block))
 
 
 def larger_node_sync():

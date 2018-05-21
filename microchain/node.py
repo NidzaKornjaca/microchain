@@ -91,11 +91,10 @@ class NeighbourNode(object):
         response = requests.post(self.address + 'sync')
         return response
 
-    def tell_block_mined(self, miner, block):
+    def send_block(self, block):
         response = requests.post(
             self.address + 'block/mined',
             json={
-                'miner': miner,
                 'block': block.serialize()
             }
         )

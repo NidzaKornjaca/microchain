@@ -41,8 +41,10 @@ class Node(object):
 
     @staticmethod
     def calculate_nonce(blockchain, block):
-        # TODO
         block.nonce = 0
+        while not blockchain.validate_nonce(block.nonce, block.hash()):
+            block.nonce += 1
+        print("Nonce is", block.nonce)
         return block.nonce
 
     def receive_block(self, block):

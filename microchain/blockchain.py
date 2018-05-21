@@ -13,14 +13,7 @@ class Block(object):
         self.nonce = nonce
 
     def hash(self):
-        string_seed = "{}{}{}{}{}".format(
-            self.idx,
-            self.previous_block_hash,
-            self.timestamp,
-            self.nonce,
-            self.transactions
-        )
-        return sha256(string_seed.encode()).hexdigest()
+        raise NotImplementedError()
 
     def serialize(self):
         return {
@@ -54,16 +47,11 @@ class Blockchain(object):
         )
 
     def validate_nonce(self, nonce, hash):
-        hash_string = "{}{}".format(nonce, hash)
-        return sha256(hash_string.encode()).hexdigest()[:4] == '0000'
+        # TODO
+        return True
 
     def validate_block(self, block):
-        previous_block = self.chain[block.idx - 1]
-        if (
-            previous_block.hash() != block.previous_block_hash or
-            not self.validate_nonce(block.nonce, block.hash())
-        ):
-            return False
+        # TODO
         return True
 
     def add_block(self, block):

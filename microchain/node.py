@@ -23,29 +23,12 @@ class Node(object):
             raise TransactionInvalidException()
 
     def mine(self):
-        previous_block = self.blockchain.chain[-1]
-        previous_block_hash = previous_block.hash()
-        coingen_tx = Transaction("void", "me", 10)
-        self.pending_transactions.append(coingen_tx)
-        fresh_block = Block(
-            previous_block.idx + 1,
-            previous_block_hash,
-            datetime.now().timestamp(),
-            0,
-            self.pending_transactions
-        )
-        self.calculate_nonce(self.blockchain, fresh_block)
-        self.blockchain.add_block(fresh_block)
-        self.pending_transactions = []
-        return fresh_block
+        raise NotImplementedError()
 
     @staticmethod
     def calculate_nonce(blockchain, block):
         block.nonce = 0
-        while not blockchain.validate_nonce(block.nonce, block.hash()):
-            block.nonce += 1
-        print("Nonce is", block.nonce)
-        return block.nonce
+        raise NotImplementedError()
 
     def receive_block(self, block):
         self.blockchain.add_block(block)
@@ -59,25 +42,7 @@ class Node(object):
         return [i.address for i in self.neighbours]
 
     def sync(self, force=False):
-        best_chain = None
-        best_len = 0 if force else len(self.blockchain.chain)
-        for neighbour in self.neighbours:
-            try:
-                chain = neighbour.get_chain()
-            except BlockInvalidException:
-                print('Invalid chain found - ignoring')
-                continue
-            chain_len = len(chain.chain)
-            if chain_len > best_len:
-                print('Longer chain found!')
-                best_chain = chain
-                best_len = chain_len
-        if best_chain:
-            print('Replacing our chain')
-            self.blockchain = chain
-            for neighbour in self.neighbours:
-                neighbour.ask_for_sync()
-
+        raise NotImplementedError()
 
 class NeighbourNode(object):
 

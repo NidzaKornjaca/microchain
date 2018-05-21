@@ -59,7 +59,24 @@ class Node(object):
         return [i.address for i in self.neighbours]
 
     def sync(self, force=False):
-        raise NotImplementedError()
+        best_chain = None
+        best_len = 0 if force else len(self.blockchain.chain)
+        for neighbour in self.neighbours:
+            try:
+                chain = neighbour.get_chain()
+            except BlockInvalidException:
+                print('Invalid chain found - ignoring')
+                continue
+            chain_len = len(chain.chain)
+            if chain_len > best_len:
+                print('Longer chain found!')
+                best_chain = chain
+                best_len = chain_len
+        if best_chain:
+            print('Replacing our chain')
+            self.blockchain = chain
+            for neighbour in self.neighbours:
+                neighbour.ask_for_sync()
 
 
 class NeighbourNode(object):

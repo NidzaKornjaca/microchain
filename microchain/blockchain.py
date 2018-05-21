@@ -13,7 +13,14 @@ class Block(object):
         self.nonce = nonce
 
     def hash(self):
-        raise NotImplementedError()
+        string_seed = "{}{}{}{}{}".format(
+            self.idx,
+            self.previous_block_hash,
+            self.timestamp,
+            self.nonce,
+            self.transactions
+        )
+        return sha256(string_seed.encode()).hexdigest()
 
     def serialize(self):
         return {

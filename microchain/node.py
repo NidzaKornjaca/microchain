@@ -23,12 +23,27 @@ class Node(object):
             raise TransactionInvalidException()
 
     def mine(self):
-        raise NotImplementedError()
+        previous_block = self.blockchain.chain[-1]
+        previous_block_hash = previous_block.hash()
+        coingen_tx = Transaction("void", "me", 10)
+        self.pending_transactions.append(coingen_tx)
+        fresh_block = Block(
+            previous_block.idx + 1,
+            previous_block_hash,
+            datetime.now().timestamp(),
+            0,
+            self.pending_transactions
+        )
+        self.calculate_nonce(self.blockchain, fresh_block)
+        self.blockchain.add_block(fresh_block)
+        self.pending_transactions = []
+        return fresh_block
 
     @staticmethod
     def calculate_nonce(blockchain, block):
+        # TODO
         block.nonce = 0
-        raise NotImplementedError()
+        return block.nonce
 
     def receive_block(self, block):
         self.blockchain.add_block(block)
@@ -43,6 +58,7 @@ class Node(object):
 
     def sync(self, force=False):
         raise NotImplementedError()
+
 
 class NeighbourNode(object):
 

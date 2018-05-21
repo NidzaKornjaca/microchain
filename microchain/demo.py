@@ -10,16 +10,6 @@ def add_block():
     print(blockchain.chain)
     prev_block = blockchain.chain[-1]
     prev_hash = prev_block.hash()
-    print(prev_hash)
-    block = Block(
-        prev_block.idx + 1,
-        prev_hash,
-        datetime.now().timestamp(),
-        0
-    )
-    _calculate_nonce(blockchain, block)
-    print("Try to add valid block")
-    _try_add_block(blockchain, block)
     bad_block = Block(
         prev_block.idx + 1,
         prev_hash,
@@ -35,15 +25,12 @@ def _try_add_block(blockchain, block):
     except BlockInvalidException:
         print("Failed - Block rejected")
 
+def node_mine():
+    n = Node()
+    n.mine()
+    return n
 
-def _calculate_nonce(blockchain, block):
-    block.nonce = 0
-    while not blockchain.validate_nonce(block.nonce, block.hash()):
-        block.nonce += 1
-    print("Nonce is", block.nonce)
-    return block.nonce
-
-def block_sync_demo():
+def node_sync():
     n = Node()
     addr = 'http://localhost:5000/'
     nn = NeighbourNode(addr)
@@ -55,11 +42,11 @@ def block_sync_demo():
         print(i.tell_block_mined('me', fresh_block))
 
 
-def advanced_sync_demo():
+def larger_node_sync():
     n = Node()
     n.add_neighbour('http://localhost:5000/')
-    block_sync_demo()
-    block_sync_demo()
+    node_sync()
+    node_sync()
     n.sync()
     print(n.blockchain.serialize_chain())
     return n

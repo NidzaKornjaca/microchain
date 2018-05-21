@@ -9,8 +9,9 @@ class Transaction(object):
         self.timestamp = timestamp
 
     def __repr__(self):
-        return "{} -> {} = {}".format(
+        return "{} -> {} = {} @ {}".format(
             self.sender,
             self.recipient,
-            self.amount
+            self.amount,
+            self.timestamp
         )

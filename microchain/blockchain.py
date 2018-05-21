@@ -53,15 +53,15 @@ class Blockchain(object):
             Block(0, 0, datetime.now().timestamp(), 0, [])
         )
 
-    def validate_nonce(self, nonce, previous_block_hash):
-        hash_string = "{}{}".format(nonce, previous_block_hash)
+    def validate_nonce(self, nonce, hash):
+        hash_string = "{}{}".format(nonce, hash)
         return sha256(hash_string.encode()).hexdigest()[:4] == '0000'
 
     def validate_block(self, block):
         previous_block = self.chain[block.idx - 1]
         if (
             previous_block.hash() != block.previous_block_hash or
-            not self.validate_nonce(block.nonce, block.previous_block_hash)
+            not self.validate_nonce(block.nonce, block.hash())
         ):
             return False
         return True

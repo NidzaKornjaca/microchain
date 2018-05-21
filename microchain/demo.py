@@ -15,8 +15,9 @@ def add_block():
         prev_block.idx + 1,
         prev_hash,
         datetime.now().timestamp(),
-        _calculate_nonce(blockchain, prev_hash)
+        0
     )
+    _calculate_nonce(blockchain, block)
     print("Try to add valid block")
     _try_add_block(blockchain, block)
     bad_block = Block(
@@ -35,12 +36,12 @@ def _try_add_block(blockchain, block):
         print("Failed - Block rejected")
 
 
-def _calculate_nonce(blockchain, previous_hash):
-    i = 0
-    while not blockchain.validate_nonce(i, previous_hash):
-        i += 1
-    print("Nonce is", i)
-    return i
+def _calculate_nonce(blockchain, block):
+    block.nonce = 0
+    while not blockchain.validate_nonce(block.nonce, block.hash()):
+        block.nonce += 1
+    print("Nonce is", block.nonce)
+    return block.nonce
 
 def block_sync_demo():
     n = Node()

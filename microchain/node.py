@@ -25,27 +25,27 @@ class Node(object):
     def mine(self):
         previous_block = self.blockchain.chain[-1]
         previous_block_hash = previous_block.hash()
-        nonce = self.calculate_nonce(self.blockchain, previous_block_hash)
         coingen_tx = Transaction("void", "me", 10)
         self.pending_transactions.append(coingen_tx)
         fresh_block = Block(
             previous_block.idx + 1,
             previous_block_hash,
             datetime.now().timestamp(),
-            nonce,
+            0,
             self.pending_transactions
         )
+        self.calculate_nonce(self.blockchain, fresh_block)
         self.blockchain.add_block(fresh_block)
         self.pending_transactions = []
         return fresh_block
 
     @staticmethod
-    def calculate_nonce(blockchain, previous_hash):
-        i = 0
-        while not blockchain.validate_nonce(i, previous_hash):
-            i += 1
-        print("Nonce is", i)
-        return i
+    def calculate_nonce(blockchain, block):
+        block.nonce = 0
+        while not blockchain.validate_nonce(block.nonce, block.hash()):
+            block.nonce += 1
+        print("Nonce is", block.nonce)
+        return block.nonce
 
     def receive_block(self, block):
         self.blockchain.add_block(block)
